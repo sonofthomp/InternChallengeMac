@@ -7,6 +7,7 @@
 
 Office.onReady((info) => {
   if (info.host === Office.HostType.Excel) {
+    // Assign event handlers and other initialization logic.
     document.getElementById("create-table").onclick = () => tryCatch(createTable);
     document.getElementById("sideload-msg").style.display = "none";
     document.getElementById("app-body").style.display = "flex";

@@ -1,0 +1,124 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. -->
+<!-- This file shows how to design a first-run page that provides a welcome screen to the user about the features of the add-in. -->
+
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Contoso Task Pane Add-in</title>
+
+    <!-- Office JavaScript API -->
+    <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1.1/hosted/office.js"></script>
+
+    <!-- For more information on Fluent UI, visit https://developer.microsoft.com/fluentui#/. -->
+    <link
+      rel="stylesheet"
+      href="https://res-1.cdn.office.net/files/fabric-cdn-prod_20230815.002/office-ui-fabric-core/11.1.0/css/fabric.min.css"
+    />
+
+    <!-- Template styles -->
+    <link href="taskpane.css" rel="stylesheet" type="text/css" />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        background-color: #f1f1f1;
+      }
+      .chat-container {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        padding: 10px;
+        overflow-y: auto;
+      }
+      .message {
+        max-width: 80%;
+        padding: 10px;
+        margin: 5px;
+        border-radius: 10px;
+        display: inline-block;
+      }
+      .user {
+        background-color: #007aff;
+        color: white;
+        align-self: flex-end;
+      }
+      .bot {
+        background-color: #e5e5ea;
+        color: black;
+        align-self: flex-start;
+      }
+      .input-container {
+        display: flex;
+        padding: 10px;
+        background: white;
+        border-top: 1px solid #ccc;
+      }
+      input {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        outline: none;
+      }
+      button {
+        margin-left: 10px;
+        padding: 10px 15px;
+        border: none;
+        background: #007aff;
+        color: white;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+
+  <body class="ms-font-m ms-welcome ms-Fabric">
+    <div class="chat-container" id="chat"></div>
+    <div class="input-container">
+      <input type="text" id="userInput" placeholder="Type a message..." />
+      <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <script>
+      function pigLatinConverter(text) {
+        return text
+          .split(" ")
+          .map((word) => {
+            return word.match(/^[aeiou]/i) ? word + "way" : word.replace(/(^[^aeiou]+)(.*)/i, "$2$1ay");
+          })
+          .join(" ");
+      }
+
+      function sendMessage() {
+        const inputField = document.getElementById("userInput");
+        const chatBox = document.getElementById("chat");
+        const userText = inputField.value.trim();
+
+        if (!userText) return;
+
+        const userMessage = document.createElement("div");
+        userMessage.className = "message user";
+        userMessage.textContent = userText;
+        chatBox.appendChild(userMessage);
+
+        setTimeout(() => {
+          const botMessage = document.createElement("div");
+          botMessage.className = "message bot";
+          botMessage.textContent = pigLatinConverter(userText);
+          chatBox.appendChild(botMessage);
+          chatBox.scrollTop = chatBox.scrollHeight;
+        }, 500);
+
+        inputField.value = "";
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }
+    </script>
+  </body>
+</html>

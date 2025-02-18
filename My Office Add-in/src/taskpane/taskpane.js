@@ -1,16 +1,6 @@
-/*
- * Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.
- * See LICENSE in the project root for license information.
- */
-
-/* global console, document, Excel, Office */
-
 Office.onReady((info) => {
   if (info.host === Office.HostType.Excel) {
-    // Assign event handlers and other initialization logic.
-    document.getElementById("create-table").onclick = () => tryCatch(createTable);
-    document.getElementById("sideload-msg").style.display = "none";
-    document.getElementById("app-body").style.display = "flex";
+    // This is for assigning event handlers (not using it at the moment)
   }
 });
 
@@ -48,4 +38,28 @@ async function tryCatch(callback) {
     // Note: In a production add-in, you'd want to notify the user through your add-in's UI.
     console.error(error);
   }
+}
+
+function sendMessage() {
+  const inputField = document.getElementById("userInput");
+  const chatBox = document.getElementById("chat");
+  const userText = inputField.value.trim();
+
+  if (!userText) return;
+
+  const userMessage = document.createElement("div");
+  userMessage.className = "message user";
+  userMessage.textContent = userText;
+  chatBox.appendChild(userMessage);
+
+  setTimeout(() => {
+    const botMessage = document.createElement("div");
+    botMessage.className = "message bot";
+    botMessage.textContent = getClaudeReply(userText);
+    chatBox.appendChild(botMessage);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }, 500);
+
+  inputField.value = "";
+  chatBox.scrollTop = chatBox.scrollHeight;
 }

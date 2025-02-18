@@ -89,3 +89,8 @@ lerna-debug.log
 # System Files
 .DS_Store
 Thumbs.db
+
+# Python flask stuff
+flask-backend/bin
+flask-backend/lib
+flask-backend/pyvenv.cfg

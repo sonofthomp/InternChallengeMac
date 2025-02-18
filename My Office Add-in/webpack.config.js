@@ -80,6 +80,7 @@ module.exports = async (env, options) => {
         template: "./src/commands/commands.html",
         chunks: ["polyfill", "commands"],
       }),
+      new NodePolyfillPlugin(),
     ],
     devServer: {
       headers: {

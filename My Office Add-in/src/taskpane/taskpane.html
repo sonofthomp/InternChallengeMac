@@ -1,8 +1,8 @@
-<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. -->
-<!-- This file shows how to design a first-run page that provides a welcome screen to the user about the features of the add-in. -->
+<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license. -->
+<!-- See LICENSE in the project root for license information -->
 
 <!doctype html>
-<html>
+<html lang="en" data-framework="typescript">
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
@@ -11,150 +11,29 @@
 
     <!-- Office JavaScript API -->
     <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1.1/hosted/office.js"></script>
-
-    <!-- For more information on Fluent UI, visit https://developer.microsoft.com/fluentui#/. -->
-    <link
-      rel="stylesheet"
-      href="https://res-1.cdn.office.net/files/fabric-cdn-prod_20230815.002/office-ui-fabric-core/11.1.0/css/fabric.min.css"
-    />
-
-    <!-- Template styles -->
-    <link href="taskpane.css" rel="stylesheet" type="text/css" />
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        flex-direction: column;
-        height: 100vh;
-        background-color: #f1f1f1;
-      }
-      .chat-container {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        padding: 10px;
-        overflow-y: auto;
-      }
-      .message {
-        max-width: 80%;
-        padding: 10px;
-        margin: 5px;
-        border-radius: 10px;
-        display: inline-block;
-      }
-      .user {
-        background-color: #007aff;
-        color: white;
-        align-self: flex-end;
-      }
-      .bot {
-        background-color: #e5e5ea;
-        color: black;
-        align-self: flex-start;
-      }
-      .input-container {
-        display: flex;
-        padding: 10px;
-        background: white;
-        border-top: 1px solid #ccc;
-      }
-      input {
-        flex: 1;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        outline: none;
-      }
-      button {
-        margin-left: 10px;
-        padding: 10px 15px;
-        border: none;
-        background: #007aff;
-        color: white;
-        border-radius: 5px;
-        cursor: pointer;
-      }
-    </style>
   </head>
 
-  <body class="ms-font-m ms-welcome ms-Fabric">
-    <!-- <script type="text/javascript" src="taskpane.js"></script> -->
+  <body style="width: 100%; height: 100%; margin: 0; padding: 0">
+    <div id="container"></div>
+
+    <!-- 
+        Fluent UI React v. 9 uses modern JavaScript syntax that is not supported in
+        Trident (Internet Explorer) or EdgeHTML (Edge Legacy), so this add-in won't
+        work in Office versions that use these webviews. The script below makes the 
+        following div display when an unsupported webview is in use, and hides the 
+        React container div. 
+    -->
+    <div id="tridentmessage" style="display: none; padding: 10">
+      This add-in will not run in your version of Office. Please upgrade either to perpetual Office 2021 (or later) or
+      to a Microsoft 365 account.
+    </div>
     <script>
-      // require("dotenv").config();
-      // console.log(process.env);
-
-      Office.onReady((info) => {
-        if (info.host === Office.HostType.Excel) {
-          // This is for assigning event handlers (not using it at the moment)
-        }
-      });
-
-      async function createTable() {
-        await Excel.run(async (context) => {
-          const currentWorksheet = context.workbook.worksheets.getActiveWorksheet();
-          const expensesTable = currentWorksheet.tables.add("A1:D1", true /*hasHeaders*/);
-          expensesTable.name = "ExpensesTable";
-
-          expensesTable.getHeaderRowRange().values = [["Date", "Merchant", "Category", "Amount"]];
-
-          expensesTable.rows.add(null /*add at the end*/, [
-            ["1/1/2017", "The Phone Company", "Communications", "120"],
-            ["1/2/2017", "Northwind Electric Cars", "Transportation", "142.33"],
-            ["1/5/2017", "Best For You Organics Company", "Groceries", "27.9"],
-            ["1/10/2017", "Coho Vineyard", "Restaurant", "33"],
-            ["1/11/2017", "Bellows College", "Education", "350.1"],
-            ["1/15/2017", "Trey Research", "Other", "135"],
-            ["1/15/2017", "Best For You Organics Company", "Groceries", "97.88"],
-          ]);
-
-          expensesTable.columns.getItemAt(3).getRange().numberFormat = [["\u20AC#,##0.00"]];
-          expensesTable.getRange().format.autofitColumns();
-          expensesTable.getRange().format.autofitRows();
-
-          await context.sync();
-        });
-      }
-
-      /** Default helper for invoking an action and handling errors. */
-      async function tryCatch(callback) {
-        try {
-          await callback();
-        } catch (error) {
-          // Note: In a production add-in, you'd want to notify the user through your add-in's UI.
-          console.error(error);
-        }
-      }
-
-      function sendMessage() {
-        const inputField = document.getElementById("userInput");
-        const chatBox = document.getElementById("chat");
-        const userText = inputField.value.trim();
-
-        if (!userText) return;
-
-        const userMessage = document.createElement("div");
-        userMessage.className = "message user";
-        userMessage.textContent = userText;
-        chatBox.appendChild(userMessage);
-
-        setTimeout(async () => {
-          const botMessage = document.createElement("div");
-          botMessage.className = "message bot";
-          botMessage.textContent = await getClaudeReply(userText);
-          chatBox.appendChild(botMessage);
-          chatBox.scrollTop = chatBox.scrollHeight;
-        }, 500);
-
-        inputField.value = "";
-        chatBox.scrollTop = chatBox.scrollHeight;
+      if (navigator.userAgent.indexOf("Trident") !== -1 || navigator.userAgent.indexOf("Edge") !== -1) {
+        var tridentMessage = document.getElementById("tridentmessage");
+        var normalContainer = document.getElementById("container");
+        tridentMessage.style.display = "block";
+        normalContainer.style.display = "none";
       }
     </script>
-    <div class="chat-container" id="chat"></div>
-    <div class="input-container">
-      <input type="text" id="userInput" placeholder="Type a message..." />
-      <button onclick="sendMessage()">Send</button>
-    </div>
   </body>
 </html>

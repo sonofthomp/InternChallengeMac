@@ -40,7 +40,7 @@ def root():
 
 @app.route('/test', methods=['GET'])
 def test():
-    return jsonify({'yeet': 'chungus'})
+    return jsonify({'test_key': 'test_val'})
 
 if __name__ == '__main__':
     app.run(port=5003)

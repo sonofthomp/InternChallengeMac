@@ -38,7 +38,7 @@ const App: React.FC = () => {
     setUserInput("");
 
     const tableAddRespCode = await claudeCSVToTable(claudeResp);
-    if (tableAddRespCode != null) {
+    if (tableAddRespCode != 0) {
       setMessages((prevMessages) => [...prevMessages, { text: "Failed to add to spreadsheet.", sender: "computer" }]);
     } else {
       setMessages((prevMessages) => [

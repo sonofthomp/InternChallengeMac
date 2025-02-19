@@ -2,7 +2,7 @@ import { PROMPT_FORMAT } from "../data/PromptFormat";
 
 export const CLAUDE_ERROR_CODES: Record<string, string> = {
   DATA_FETCH_ERROR: "Failed to fetch data from backend API endpoint",
-  INVALID_RESPONSE: "Your prompt produced an invalid (non-JSON) output",
+  INVALID_RESPONSE: "Your prompt produced an invalid (non-CSV) output",
 };
 
 export const BACKEND_API_DOMAIN = "https://gabrielezrathompson.pythonanywhere.com/";
@@ -52,7 +52,8 @@ export async function claudeCSVToTable(output: string) {
 
       await context.sync();
     });
+    return 0;
   } catch (error) {
-    return error;
+    return 1;
   }
 }
